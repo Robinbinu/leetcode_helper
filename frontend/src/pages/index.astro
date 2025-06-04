@@ -1,0 +1,114 @@
+---
+import App from '../components/App';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="LeetCode Helper">
+	<div class="max-w-4xl mx-auto">
+		<div class="mb-8">
+			<h2 class="text-2xl font-bold text-white mb-2">LeetCode Problem Solver</h2>
+			<p class="text-primary">
+				Enter your LeetCode problem, select your preferred AI provider, and get a detailed solution with explanations, code, and hints.
+			</p>
+		</div>
+		<App client:only="react" />
+		<!-- <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+			<div class="lg:col-span-5">
+				<div id="app-container"></div>
+			</div>
+			<div class="lg:col-span-7" id="solution-container">
+				<!-- Solution will be displayed here -->
+			</div>
+		</div>
+	</div>
+</Layout>
+
+
+<!-- 
+<script>
+	import { render } from 'react-dom';
+	import { createElement, useState, useEffect } from 'react';
+	import ProblemInputForm from '../components/ProblemInputForm';
+	import SolutionDisplay from '../components/SolutionDisplay';
+	import { apiClient } from '../utils/api';
+
+	// Main App Component
+	function App() {
+		const [solution, setSolution] = useState(null);
+		const [error, setError] = useState(null);
+		const [isLoading, setIsLoading] = useState(false);
+
+		const handleSubmit = async (data) => {
+			setIsLoading(true);
+			setError(null);
+			setSolution(null);
+
+			try {
+				// Use the apiClient instead of direct fetch
+				const result = await apiClient.solveProblem({
+					problemText: data.problemText,
+					language: data.language,
+					userLevel: data.userLevel,
+					provider: data.provider,
+					apiKey: data.apiKey,
+				});
+
+				setSolution(result);
+				
+				// Update solution in the solution container
+				const event = new CustomEvent('solution-update', {
+					detail: { solution: result, error: null }
+				});
+				window.dispatchEvent(event);
+				
+			} catch (err) {
+				setError(err.message);
+				
+				// Update error in the solution container
+				const event = new CustomEvent('solution-update', {
+					detail: { solution: null, error: err.message }
+				});
+				window.dispatchEvent(event);
+			} finally {
+				setIsLoading(false);
+			}
+		};
+
+		return createElement(
+			'div',
+			null,
+			createElement(ProblemInputForm, { 
+				onSubmit: handleSubmit, 
+				isLoading: isLoading 
+			})
+		);
+	}
+
+	// Render the main app
+	render(createElement(App), document.getElementById('app-container'));
+
+	// Create a separate component for the solution display
+	function SolutionContainer() {
+		const [solution, setSolution] = useState(null);
+		const [error, setError] = useState(null);
+
+		// Listen for solution updates
+		useEffect(() => {
+			const handleSolutionUpdate = (event) => {
+				setSolution(event.detail.solution);
+				setError(event.detail.error);
+			};
+
+			window.addEventListener('solution-update', handleSolutionUpdate);
+			
+			return () => {
+				window.removeEventListener('solution-update', handleSolutionUpdate);
+			};
+		}, []);
+
+		return createElement(SolutionDisplay, { solution, error });
+	}
+
+	// Render the solution container
+	render(createElement(SolutionContainer), document.getElementById('solution-container'));
+</script>-->
