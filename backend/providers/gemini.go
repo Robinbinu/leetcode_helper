@@ -6,8 +6,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
-
+	"strings"
 	"github.com/leetcode-helper/api/models"
 )
 
@@ -92,7 +93,7 @@ func (p *GeminiProvider) GenerateSolution(ctx context.Context, problem string, l
 		},
 		GenerationConfig: GeminiGenerationConfig{
 			Temperature:     0.2,
-			MaxOutputTokens: 8192,
+			MaxOutputTokens: 1000,
 		},
 	}
 
@@ -145,6 +146,7 @@ func (p *GeminiProvider) GenerateSolution(ctx context.Context, problem string, l
 	}
 
 	content := geminiResp.Candidates[0].Content.Parts[0].Text
+	log.Println(content)
 
 	// Try to extract JSON from the content
 	var solution models.SolutionResponse
@@ -155,8 +157,19 @@ func (p *GeminiProvider) GenerateSolution(ctx context.Context, problem string, l
 		// If that fails, try to extract JSON from markdown code blocks
 		jsonStr := extractJSONFromMarkdown(content)
 		if jsonStr != "" {
-			err = json.Unmarshal([]byte(jsonStr), &solution)
+			// // Remove outer markers
+			cleanStr := strings.ReplaceAll(jsonStr, "```jsonStart", "")
+			cleanStr = strings.ReplaceAll(cleanStr, "```jsonEnd", "")
+
+			// Remove code block markers inside the code field
+			cleanStr = strings.ReplaceAll(cleanStr, "```", "")
+
+			cleanStr = strings.TrimSpace(cleanStr)
+			log.Println("cleanStr: ", cleanStr)
+
+			err = json.Unmarshal([]byte(cleanStr), &solution)
 			if err != nil {
+				log.Println(err)
 				return nil, errors.New("failed to parse solution from response")
 			}
 		} else {

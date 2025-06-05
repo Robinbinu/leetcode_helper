@@ -72,7 +72,7 @@ func (p *OpenAIProvider) GenerateSolution(ctx context.Context, problem string, l
 		Messages: []OpenAIMessage{
 			{
 				Role:    "system",
-				Content: "You are a coding expert that helps solve LeetCode problems. Provide detailed explanations, efficient code solutions, and helpful hints. Format your response as JSON with fields: explanation, code, hints (array), timeComplexity, and spaceComplexity.",
+				Content: "You are a coding expert that helps solve LeetCode problems. Provide detailed explanations, efficient code solutions, and helpful hints. Format your response as JSON with fields: explanation, code, hints (array), timeComplexity, and spaceComplexity.Keep your responses short and precise",
 			},
 			{
 				Role:    "user",
@@ -155,39 +155,43 @@ func (p *OpenAIProvider) GenerateSolution(ctx context.Context, problem string, l
 
 // Helper function to generate a prompt for the AI
 func generatePrompt(problem string, language string, userLevel string) string {
+	jsonBlockStart := "```jsonStart"
+	jsonBlockEnd := "```jsonEnd"
 	return fmt.Sprintf(`
-Solve the following LeetCode problem:
-
-Problem:
-%s
-
-Programming Language: %s
-User Experience Level: %s
-
-Please provide a detailed solution with:
-1. A clear explanation of the approach
-2. Efficient code implementation in %s
-3. Helpful hints for understanding key concepts
-4. Time and space complexity analysis
-
-Format your response as a JSON object with the following structure add the 'START' word to indicate the start and 'END' for the end of the Json:
-{
-  "explanation": "Detailed explanation of the solution approach",
-  "code": "Complete code solution",
-  "hints": ["Hint 1", "Hint 2", "Hint 3"],
-  "timeComplexity": "O(n)",
-  "spaceComplexity": "O(1)"
-}
-`, problem, language, userLevel, language)
+	Solve the following LeetCode problem:
+	
+	Problem:
+	%s
+	
+	Programming Language: %s
+	User Experience Level: %s
+	
+	Please provide a detailed solution with:
+	1. A clear explanation of the approach in points
+	2. Efficient code implementation in %s
+	3. Helpful hints for understanding key concepts
+	4. Time and space complexity analysis in points
+	
+	Format your response as a JSON object with the following structure
+	%s
+	{
+	  "explanation": "Detailed explanation of the solution approach",
+	  "code": "Complete code solution",
+	  "hints": ["Hint 1", "Hint 2", "Hint 3"],
+	  "timeComplexity": "O(n)",
+	  "spaceComplexity": "O(1)"
+	}
+	%s
+	`, problem, language, userLevel, language, jsonBlockStart, jsonBlockEnd)
 }
 
 // Helper function to extract JSON from markdown
 func extractJSONFromMarkdown(markdown string) string {
 	// Look for JSON code blocks
-	jsonBlockStart := "START"
-	jsonBlockEnd := "END"
-	// jsonBlockStart := "```json"
-	// jsonBlockEnd := "```"
+	// jsonBlockStart := "START"
+	// jsonBlockEnd := "END"
+	jsonBlockStart := "```jsonStart"
+	jsonBlockEnd := "```jsonEnd"
 
 	startIdx := strings.Index(markdown, jsonBlockStart)
 	if startIdx == -1 {

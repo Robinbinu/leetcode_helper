@@ -11,11 +11,11 @@ type SolveRequest struct {
 
 // SolutionResponse represents the response structure for a solved problem
 type SolutionResponse struct {
-	Explanation    string   `json:"explanation"`
-	Code           string   `json:"code"`
-	Hints          []string `json:"hints"`
-	TimeComplexity string   `json:"time_complexity"`
-	SpaceComplexity string  `json:"space_complexity"`
+	Explanation     string   `json:"explanation"`
+	Code            string   `json:"code"`
+	Hints           []string `json:"hints"`
+	TimeComplexity  string   `json:"timeComplexity"`
+	SpaceComplexity string   `json:"spaceComplexity"`
 }
 
 // ErrorResponse represents an error response

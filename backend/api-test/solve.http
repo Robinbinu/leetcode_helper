@@ -1,0 +1,10 @@
+POST http://localhost:8080/api/solve
+Content-Type: application/json
+
+{
+  "problem_text": "1061. Lexicographically Smallest Equivalent String",
+  "language": "python",
+  "user_level": "Beginner",
+  "provider": "gemini",
+  "api_key": "api-key"
+}
